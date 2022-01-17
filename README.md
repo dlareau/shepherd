@@ -1,8 +1,5 @@
 # Shepherd
 
-[![Build Status](https://ci.strahlungsfrei.de/api/badges/djmaze/shepherd/status.svg)](https://ci.strahlungsfrei.de/djmaze/shepherd)
-[![Docker Stars](https://img.shields.io/docker/stars/mazzolino/shepherd.svg)](https://hub.docker.com/r/mazzolino/shepherd/) [![Docker Pulls](https://img.shields.io/docker/pulls/mazzolino/shepherd.svg)](https://hub.docker.com/r/mazzolino/shepherd/)
-
 A Docker swarm service for automatically updating your services whenever their base image is refreshed.
 
 ## Usage
@@ -10,7 +7,7 @@ A Docker swarm service for automatically updating your services whenever their b
     docker service create --name shepherd \
                           --constraint "node.role==manager" \
                           --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock,ro \
-                          mazzolino/shepherd
+                          dlareau/shepherd
 
 ## Or with docker-compose
 
@@ -19,7 +16,7 @@ A Docker swarm service for automatically updating your services whenever their b
       ...
       shepherd:
         build: .
-        image: mazzolino/shepherd
+        image: dlareau/shepherd
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock
         deploy:
