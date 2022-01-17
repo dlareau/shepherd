@@ -60,8 +60,8 @@ update_services() {
           fi
           if [[ "$apprise_sidecar_url" != "" ]]; then
             title="[Shepherd] Service $name update failed"
-            body="$(date) Service $name failed to update to $(docker service inspect "$name" -f '{{.Spec.TaskTemplate.ContainerSpec.Image}}')"
-            curl -X POST -H "Content-Type: application/json" --data "{\"title\": \"$title\", \"body\": \"$body\"}" "$apprise_sidecar_url"
+            failImage="$(docker service inspect "$name" -f '{{.Spec.TaskTemplate.ContainerSpec.Image}}')"
+            curl -X POST -H "Content-Type: application/json" --data "{\"title\": \"$title\", \"status\": \"fail\", \"service\": \"$name\", \"image\": \"$failImage\"}" "$apprise_sidecar_url"
           fi
           continue    # continue with next service
         fi
@@ -74,8 +74,7 @@ update_services() {
           logger "Service $name was updated!"
           if [[ "$apprise_sidecar_url" != "" ]]; then
             title="[Shepherd] Service $name updated"
-            body="$(date) Service $name was updated from $previousImage to $currentImage"
-            curl -X POST -H "Content-Type: application/json" --data "{\"title\": \"$title\", \"body\": \"$body\"}" "$apprise_sidecar_url"
+            curl -X POST -H "Content-Type: application/json" --data "{\"title\": \"$title\", \"status\": \"success\", \"service\": \"$name\", \"prevImage\": \"$previousImage\", \"currImage\": \"$currentImage\"}" "$apprise_sidecar_url"
           fi
 
           if [[ "$image_autoclean_limit" != "" ]]; then
